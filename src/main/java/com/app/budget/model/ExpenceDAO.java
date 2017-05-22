@@ -41,4 +41,8 @@ public class ExpenceDAO {
 	public List<Expence> getAll(){
 		return expences;
 	}
+
+	public List<Expence> getByDate(LocalDate localDate) {
+		return expences;
+	}
 }

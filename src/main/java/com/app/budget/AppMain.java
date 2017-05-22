@@ -1,10 +1,14 @@
 package com.app.budget;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 import com.app.budget.model.Expence;
 import com.app.budget.model.ExpenceDAO;
+import com.app.budget.model.Item;
+import com.app.budget.model.ItemDAO;
 import com.app.budget.view.BudgetOverviewController;
+import com.app.budget.view.RootOverviewController;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -23,11 +27,13 @@ public class AppMain extends Application {
 	private BorderPane rootOverview;
 	
 	private ObservableList<Expence> expences = FXCollections.observableArrayList();
+	private ObservableList<Item> items = FXCollections.observableArrayList();
 	ExpenceDAO expenceDAO;
+	ItemDAO itemDAO;
 	
 	public AppMain() {
 		expenceDAO = new ExpenceDAO();
-		expences.addAll(expenceDAO.getAll()); 
+		itemDAO = new ItemDAO();
 	}
 	
 	@Override
@@ -36,12 +42,14 @@ public class AppMain extends Application {
 		this.window.setTitle(APP_TITLE);
 		
 		initRootOverview();
+		initBudgetOverview();
 	}
 
 	private void initRootOverview() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(AppMain.class.getResource("view/RootOverview.fxml"));
+			loader.setControllerFactory(cf -> buildController(window));
 			rootOverview = loader.load();
 			
 			Scene scene = new Scene(rootOverview);
@@ -54,7 +62,7 @@ public class AppMain extends Application {
 	}
 
 	
-	public void initBudhetOverview(){
+	public void initBudgetOverview(){
 		try{
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(AppMain.class.getResource("view/BudgetOverview.fxml"));
@@ -69,12 +77,27 @@ public class AppMain extends Application {
 			e.printStackTrace();
 		}
 	}
+
+	private RootOverviewController buildController(Stage window){
+		return new RootOverviewController(window);
+	}
+
 	
-	public ObservableList<Expence> getExpences(){
+	public ObservableList<Expence> getExpences(LocalDate localDate){
+		expences.clear();
+		expences.addAll(expenceDAO.getByDate(localDate));
 		return expences;
 	}
 	
+	public ObservableList<Item> getItems() {
+		System.out.println("getItems");
+		items.clear();
+		items.addAll(itemDAO.getAll());
+		return items;
+	}
+
 	public static void main(String[] args) {
 		launch(args);
 	}
+
 }

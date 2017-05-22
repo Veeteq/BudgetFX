@@ -4,15 +4,27 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 public class Expence {
 
-	private ObjectProperty<LocalDate> operDt;
-	private ObjectProperty<Item> expeItem;
-	private ObjectProperty<BigDecimal> expeItemCount;
-	private ObjectProperty<BigDecimal> expeItemPrice;
+	private ObjectProperty<LocalDate> operDt = new SimpleObjectProperty<LocalDate>();
+	private ObjectProperty<Item> expeItem = new SimpleObjectProperty<Item>();
+	private ObjectProperty<BigDecimal> expeItemCount = new SimpleObjectProperty<BigDecimal>();
+	private ObjectProperty<BigDecimal> expeItemPrice = new SimpleObjectProperty<BigDecimal>();
+	private ObjectProperty<BigDecimal> expeSumAmonut = new SimpleObjectProperty<BigDecimal>();
 	
 	public Expence(){
+		expeItemCount.addListener((obs, oldVal, newVal) -> {
+			if(this.expeItemPrice.get() != null){
+				this.expeSumAmonut.set(this.expeItemPrice.get().multiply(newVal));
+			}
+		});
+		expeItemPrice.addListener((obs, oldVal, newVal) -> {
+			if(this.expeItemCount.get() != null){
+				this.expeSumAmonut.set(this.expeItemCount.get().multiply(newVal));
+			}
+		});
 	}
 
 	public ObjectProperty<LocalDate> getOperDtProperty(){
@@ -63,5 +75,15 @@ public class Expence {
 		this.expeItemPrice.set(expeItemPrice);
 	}
 	
-	
+	public ObjectProperty<BigDecimal> getExpeSumAmountProperty(){
+		return expeSumAmonut;
+	}
+
+	public BigDecimal getExpeSumAmount(){
+		return this.expeSumAmonut.get();
+	}
+
+	public void setExpeSumAmount(BigDecimal expeSumAmount) {
+		this.expeSumAmonut.set(expeSumAmount);
+	}	
 }

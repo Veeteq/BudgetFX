@@ -23,14 +23,11 @@ public class ItemDAO {
 		itemList.add(item5);
 	}
 
+	public List<Item> getAll(){
+		return itemList;
+	}
+	
 	public Item getItemById(int i) {
 		return itemList.get(i);
 	}
-
-public static void main(String[] args) {
-	ItemDAO itemDAO = new ItemDAO();
-	Item item = itemDAO.getItemById(3);
-	System.out.println(item);
-}
-
 }
