@@ -37,9 +37,9 @@
             
             <HBox alignment="TOP_CENTER" layoutX="10" layoutY="222">
               <children>
-                <Button mnemonicParsing="false" text="Zapisz" />
-                <Button mnemonicParsing="false" text="Aktualizuj" />
-                <Button mnemonicParsing="false" text="Usun" />
+                <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#onSave" text="Zapisz" />
+                <Button fx:id="updateBtn" mnemonicParsing="false" onAction="#onUpdate" text="Aktualizuj" />
+                <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#onDelete" text="Usun" />
               </children>
             </HBox>
           </AnchorPane>
