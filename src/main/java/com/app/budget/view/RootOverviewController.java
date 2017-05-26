@@ -1,6 +1,7 @@
 package com.app.budget.view;
 
 import com.app.budget.AppMain;
+import com.app.budget.model.DataModel;
 import com.app.budget.model.User;
 
 import javafx.application.Platform;
@@ -10,12 +11,12 @@ import javafx.stage.Stage;
 public class RootOverviewController {
 
 	private AppMain appMain;
+	private DataModel dataModel;
 	
-	public RootOverviewController(Stage window) {
-		window.setOnCloseRequest(e -> {
-			//model.close();
-			System.out.println("Close requested, " + e);
-		});
+	public RootOverviewController(AppMain appMain, DataModel dataModel, Stage window) {
+		this.appMain = appMain;
+		this.dataModel = dataModel;
+		window.setOnCloseRequest(e -> dataModel.close());
 	}
 	
 	@FXML
@@ -38,7 +39,7 @@ public class RootOverviewController {
 		boolean okClicked = appMain.openUserEditDialog(user);
 		System.out.println(user);
 		if(okClicked){
-			appMain.getUsers().add(user);
+			dataModel.getUsers().add(user);
 		}
 	}
 
@@ -46,8 +47,7 @@ public class RootOverviewController {
 	private void onEditCategories(){
 	}
 	
-	public void setAppMain(AppMain appMain){
-		System.out.println("Set AppMain");
-		this.appMain = appMain;
+	public DataModel getDataModel(){
+		return dataModel;
 	}
 }

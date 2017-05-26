@@ -1,27 +1,25 @@
 package com.app.budget.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
-public class UserDAO {
+public class UserDAO implements IUserDAO{
 
-	private List<User> userList;
+	private ObservableList<User> userList = FXCollections.observableArrayList();
 
 	public UserDAO() {
-		System.out.println("Constructor 1");
-		userList = new ArrayList<User>();
+		User user1 = new User();
+		user1.setUserName("Witek");
+		user1.setUserType("Cash");
+		user1.setUserDescription("Witek W");
+		userList.add(user1);
 	}
 
-	public UserDAO(List<User> userList) {
-		System.out.println("Constructor 2");
-		this.userList = userList;
-	}
-
-	public List<User> getAll() {
+	public ObservableList<User> getAll() {
 		return userList;
 	}
 
-	public User getUserById(int id) {
+	public User getById(int id) {
 		return userList.get(id);
 	}
 }

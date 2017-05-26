@@ -5,7 +5,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 
-import com.app.budget.AppMain;
+import com.app.budget.model.DataModel;
 import com.app.budget.model.Expence;
 import com.app.budget.model.Item;
 import com.app.budget.model.User;
@@ -69,7 +69,7 @@ public class BudgetOverviewController {
 	@FXML
 	private Button deleteBtn;
 
-	private AppMain appMain;
+	private DataModel dataModel;
 	
 	public BudgetOverviewController(){
 		System.out.println("controller");
@@ -144,17 +144,17 @@ public class BudgetOverviewController {
 		});
 	}
 	
-	public void setAppMain(AppMain appMain){
+	public void setDataModel(DataModel dataModel){
 		System.out.println("setAppMain");
-		this.appMain = appMain;
+		this.dataModel = dataModel;
 		
-		expeItemIdComboBox.setItems(this.appMain.getItems());
+		expeItemIdComboBox.setItems(this.dataModel.getItems());
 		expeItemIdComboBox.getSelectionModel().select(0);
 		
-		expeUserIdComboBox.setItems(this.appMain.getUsers());
+		expeUserIdComboBox.setItems(this.dataModel.getUsers());
 		expeUserIdComboBox.getSelectionModel().select(0);
 		
-		expenceTable.setItems(this.appMain.getExpences(expeOperDtComboBox.getValue()));
+		expenceTable.setItems(this.dataModel.getExpences(expeOperDtComboBox.getValue()));
 	}
 	
 	private void showExpenceDetails(Expence expence) {
@@ -174,7 +174,7 @@ public class BudgetOverviewController {
 		expence.setExpeItem(expeItemIdComboBox.getValue());
 		expence.setExpeItemCount(new BigDecimal(expeItemCountTextField.getText()));
 		expence.setExpeItemPrice(new BigDecimal(expeItemPriceTextField.getText()));
-		appMain.getExpences(expeOperDtComboBox.getValue()).add(expence);
+		dataModel.getExpences(expeOperDtComboBox.getValue()).add(expence);
 	}
 	
 	public void onUpdate(){

@@ -1,21 +1,16 @@
 package com.app.budget;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.app.budget.model.Expence;
-import com.app.budget.model.ExpenceDAO;
-import com.app.budget.model.Item;
-import com.app.budget.model.ItemDAO;
+import com.app.budget.model.DataModel;
 import com.app.budget.model.User;
-import com.app.budget.model.UserDAO;
 import com.app.budget.view.BudgetOverviewController;
 import com.app.budget.view.RootOverviewController;
 import com.app.budget.view.UserEditDialogController;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -27,26 +22,15 @@ import javafx.stage.Stage;
 public class AppMain extends Application {
 
 	private static final String APP_TITLE = "Budget";
+	private final static Logger LOGGER = Logger.getLogger(AppMain.class.getName());
 	
 	private Stage window;
 	private BorderPane rootOverview;
-	
-	private ObservableList<Expence> expences = FXCollections.observableArrayList();
-	private ObservableList<Item> items = FXCollections.observableArrayList();
-	private ObservableList<User> users = FXCollections.observableArrayList();
-	
-	ExpenceDAO expenceDAO;
-	ItemDAO itemDAO;
-	UserDAO userDAO;
-	
-	public AppMain() {
-		expenceDAO = new ExpenceDAO();
-		itemDAO = new ItemDAO();
-		userDAO = new UserDAO(users);
-	}
-	
+	private RootOverviewController rootController;
+		
 	@Override
 	public void start(Stage window) {
+		LOGGER.info("AppMain: start");
 		this.window = window;
 		this.window.setTitle(APP_TITLE);
 		this.window.getIcons().add(new Image("file:src/main/resources/budget.png"));
@@ -56,14 +40,14 @@ public class AppMain extends Application {
 	}
 
 	private void initRootOverview() {
+		LOGGER.info("AppMain: initRootOverview");
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(AppMain.class.getResource("view/RootOverview.fxml"));
 			loader.setControllerFactory(cf -> buildController(window));
 			rootOverview = loader.load();
 			
-			RootOverviewController controller = loader.getController();
-			controller.setAppMain(this);
+			rootController = loader.getController();
 			
 			Scene scene = new Scene(rootOverview);
 			window.setScene(scene);
@@ -76,6 +60,7 @@ public class AppMain extends Application {
 
 	
 	public void initBudgetOverview(){
+		LOGGER.info("AppMain: initBudgetOverview");
 		try{
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(AppMain.class.getResource("view/BudgetOverview.fxml"));
@@ -84,7 +69,7 @@ public class AppMain extends Application {
 			rootOverview.setCenter(budgetOverview);
 			
 			BudgetOverviewController controller = loader.getController();
-			controller.setAppMain(this);
+			controller.setDataModel(rootController.getDataModel());
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -92,31 +77,17 @@ public class AppMain extends Application {
 	}
 
 	private RootOverviewController buildController(Stage window){
-		return new RootOverviewController(window);
+		LOGGER.info("AppMain: buildController");
+		return new RootOverviewController(this, buildDataModel(), window);
 	}
 
-	
-	public ObservableList<Expence> getExpences(LocalDate localDate){
-		expences.clear();
-		expences.addAll(expenceDAO.getByDate(localDate));
-		return expences;
+	private DataModel buildDataModel(){
+		LOGGER.info("AppMain: buildDataModel");
+		return new DataModel();
 	}
-	
-	public ObservableList<Item> getItems() {
-		System.out.println("getItems");
-		items.clear();
-		items.addAll(itemDAO.getAll());
-		return items;
-	}
-
-	public ObservableList<User> getUsers(){
-		System.out.println("getUsers");
-		//users.clear();
-		//users.addAll(userDAO.getAll());
-		return users;
-	}
-	
+		
 	public boolean openUserEditDialog(User user){
+		LOGGER.info("AppMain: openUserEditDialog");
 		try{
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(AppMain.class.getResource("view/UserEditDialog.fxml"));
@@ -138,7 +109,7 @@ public class AppMain extends Application {
 			
 			return controller.isOKClicked();
 		}catch(IOException e){
-			e.printStackTrace();
+			LOGGER.log(Level.WARNING, "AppMain: error in openUserEditDialog");
 			return false;
 		}
 	}
