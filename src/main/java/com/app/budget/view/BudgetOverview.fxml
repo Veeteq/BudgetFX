@@ -21,10 +21,10 @@
             <DatePicker fx:id="expeOperDtComboBox" layoutX="10.0" layoutY="26.0" prefHeight="26.0" prefWidth="130.0" />
                                  
             <Label layoutX="160.0" layoutY="10.0" text="Kto" />
-            <ComboBox fx:id="expeUserIdComboBox" layoutX="150.0" layoutY="26.0" prefWidth="140.0" />
+            <ComboBox fx:id="expeUserIdComboBox" layoutX="150.0" layoutY="26.0" prefWidth="140.0" editable="true" />
                   
             <Label layoutX="10.0" layoutY="60.0" text="Towar" />
-            <ComboBox fx:id="expeItemIdComboBox" layoutX="10.0" layoutY="76.0" prefWidth="280.0" />
+            <ComboBox fx:id="expeItemIdComboBox" layoutX="10.0" layoutY="76.0" prefWidth="280.0" editable="true" />
                   
             <Label layoutX="10.0" layoutY="110.0" text="Ilosc" />
             <TextField fx:id="expeItemCountTextField" layoutX="10.0" layoutY="126.0" prefHeight="26.0" prefWidth="86.0" />
