@@ -9,6 +9,7 @@ import javafx.beans.property.SimpleObjectProperty;
 public class Expence {
 
 	private ObjectProperty<LocalDate> operDt = new SimpleObjectProperty<LocalDate>();
+	private ObjectProperty<User> expeUser = new SimpleObjectProperty<User>();
 	private ObjectProperty<Item> expeItem = new SimpleObjectProperty<Item>();
 	private ObjectProperty<BigDecimal> expeItemCount = new SimpleObjectProperty<BigDecimal>();
 	private ObjectProperty<BigDecimal> expeItemPrice = new SimpleObjectProperty<BigDecimal>();
@@ -39,6 +40,18 @@ public class Expence {
 		this.operDt.set(operDt);
 	}
 
+	public ObjectProperty<User> getExpeUserProperty(){
+		return expeUser;
+	}
+
+	public User getExpeUser() {
+		return expeUser.get();
+	}
+
+	public void setExpeUser(User expeUser) {
+		this.expeUser.set(expeUser);
+	}
+	
 	public ObjectProperty<Item> getExpeItemProperty(){
 		return expeItem;
 	}

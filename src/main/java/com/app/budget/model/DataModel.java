@@ -17,7 +17,7 @@ public class DataModel {
 	public DataModel(){
 		expenceDAO = new ExpenceDAO();
 		itemDAO = new ItemDAO();
-		userDAO = new UserDAO();
+		userDAO = UserDAO.getInstance();
 	}
 	
 	public void close(){

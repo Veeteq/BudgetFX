@@ -14,10 +14,13 @@ public class ExpenceDAO {
 	
 	public ExpenceDAO(){
 		ItemDAO itemDAO = new ItemDAO();
+		UserDAO userDAO = UserDAO.getInstance();
+		
 		expences = new ArrayList<>();
 		
 		Expence expence1 = new Expence();
 		expence1.setOperDt(LocalDate.of(2017, 5, 18));
+		expence1.setExpeUser(userDAO.getById(0));
 		expence1.setExpeItem(itemDAO.getItemById(3));
 		expence1.setExpeItemCount(BigDecimal.valueOf(1.5));
 		expence1.setExpeItemPrice(BigDecimal.valueOf(15));
@@ -25,6 +28,7 @@ public class ExpenceDAO {
 		
 		Expence expence2 = new Expence();
 		expence2.setOperDt(LocalDate.of(2017, 5, 18));
+		expence2.setExpeUser(userDAO.getById(0));
 		expence2.setExpeItem(itemDAO.getItemById(1));
 		expence2.setExpeItemCount(BigDecimal.valueOf(2.2));
 		expence2.setExpeItemPrice(BigDecimal.valueOf(150));
@@ -32,6 +36,7 @@ public class ExpenceDAO {
 
 		Expence expence3 = new Expence();
 		expence3.setOperDt(LocalDate.of(2017, 5, 18));
+		expence3.setExpeUser(userDAO.getById(0));
 		expence3.setExpeItem(itemDAO.getItemById(4));
 		expence3.setExpeItemCount(BigDecimal.valueOf(4));
 		expence3.setExpeItemPrice(BigDecimal.valueOf(10));
