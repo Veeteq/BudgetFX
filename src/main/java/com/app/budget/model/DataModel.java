@@ -15,7 +15,8 @@ public class DataModel {
 	private ExpenceDAO expenceDAO;
 	
 	public DataModel(){
-		itemDAO = TxtItemDAO.getInstance(new File("f:/items.txt"));
+		//itemDAO = TxtItemDAO.getInstance(new File("f:/items.txt"));
+		itemDAO = TxtItemDAO.getInstance(new File("/run/media/actimize/BC3C84CD3C8483DC/items.txt"));
 		userDAO = UserDAO.getInstance();
 		expenceDAO = ExpenceDAO.getInstance(itemDAO, userDAO);
 	}

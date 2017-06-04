@@ -3,12 +3,13 @@ package com.app.budget.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.app.budget.dao.IExpenceDAO;
 import com.app.budget.dao.IItemDAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class ExpenceDAO {
+public class ExpenceDAO implements IExpenceDAO<Expence>{
 
 	private static ExpenceDAO instance;
 	private ObservableList<Expence> expences = FXCollections.observableArrayList();
@@ -53,5 +54,10 @@ public class ExpenceDAO {
 
 	public ObservableList<Expence> getByDate(LocalDate localDate) {
 		return expences;
+	}
+
+	@Override
+	public Expence getById(int id) {
+		return null;
 	}
 }

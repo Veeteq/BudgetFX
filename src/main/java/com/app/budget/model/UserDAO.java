@@ -1,5 +1,7 @@
 package com.app.budget.model;
 
+import com.app.budget.dao.IUserDAO;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

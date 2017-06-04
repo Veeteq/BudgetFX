@@ -1,4 +1,6 @@
-package com.app.budget.model;
+package com.app.budget.dao;
+
+import com.app.budget.model.User;
 
 import javafx.collections.ObservableList;
 
