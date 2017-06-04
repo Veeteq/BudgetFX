@@ -1,8 +1,6 @@
 package com.app.budget.view;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 
 import com.app.budget.model.DataModel;
@@ -10,9 +8,14 @@ import com.app.budget.model.Expence;
 import com.app.budget.model.Item;
 import com.app.budget.model.User;
 import com.app.budget.util.DateUtil;
+import com.app.budget.util.DecimalStringConverter;
 import com.app.budget.util.NumberTextFormatter;
 import com.app.budget.util.TableCellFormatter;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -71,8 +74,16 @@ public class BudgetOverviewController {
 
 	private DataModel dataModel;
 	
+	private ObjectProperty<BigDecimal> expeItemCountValue = new SimpleObjectProperty<BigDecimal>();
+	private ObjectProperty<BigDecimal> expeItemPriceValue = new SimpleObjectProperty<BigDecimal>();
+	private ObjectProperty<BigDecimal> expeSumAmountValue = new SimpleObjectProperty<BigDecimal>();
+	
+	private FilteredList<Expence> filteredList;
+	
 	public BudgetOverviewController(){
 		System.out.println("controller");
+		expeItemCountValue.set(BigDecimal.valueOf(1));
+		expeItemPriceValue.set(BigDecimal.valueOf(0));
 	}
 	
 	@FXML
@@ -80,8 +91,19 @@ public class BudgetOverviewController {
 		System.out.println("init");
 		expeOperDtComboBox.setConverter(DateUtil.getConverter());
 		expeOperDtComboBox.setValue(LocalDate.now());
+		expeOperDtComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+			filteredList.setPredicate(expence -> {
+				if(expence.getOperDt().equals(newVal)){
+					return true;
+				}
+				return false;
+			});
+			expenceTable.refresh();
+		});
 		
 		expeItemColumn.setCellValueFactory(cellData -> cellData.getValue().getExpeItemProperty());
+		//expeUserColumn.setCellValueFactory(cellData -> cellData.getValue().getExpeUserProperty());
+		
 		expeItemCountColumn.setCellValueFactory(cellData -> cellData.getValue().getExpeItemCountProperty());
 		expeItemCountColumn.setCellFactory(cell -> new TableCellFormatter(3));
 		
@@ -97,51 +119,20 @@ public class BudgetOverviewController {
 		
 		/* expeItemCountTextField - settings */
 		expeItemCountTextField.setTextFormatter(NumberTextFormatter.getNumberTextFormatter());
-		expeItemCountTextField.textProperty().addListener((obs, oldVal, newVal) -> {
-			if(expeItemPriceTextField.getText() != null && !expeItemPriceTextField.getText().isEmpty()){
-				BigDecimal itemCount = new BigDecimal(newVal);
-				BigDecimal itemPrice = new BigDecimal(expeItemPriceTextField.textProperty().get());
-				expeSumAmountTextField.setText(itemCount.multiply(itemPrice).toString());
-			}
-		});
-		expeItemCountTextField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-			DecimalFormat df = new DecimalFormat("0.000");
-			df.setRoundingMode(RoundingMode.HALF_UP);
-			if(!newVal.booleanValue()){
-				BigDecimal itemCount = new BigDecimal(expeItemCountTextField.getText());
-				expeItemCountTextField.setText(df.format(itemCount));
-			}
-		});
 		expeItemCountTextField.setAlignment(Pos.CENTER_RIGHT);
 		
-		/* expeItemPriceTextField - settings */
 		expeItemPriceTextField.setTextFormatter(NumberTextFormatter.getNumberTextFormatter());
-		expeItemPriceTextField.textProperty().addListener((obs, oldVal, newVal) -> {
-			if(expeItemCountTextField.getText() != null && !expeItemCountTextField.getText().isEmpty()){
-				BigDecimal itemPrice = new BigDecimal(newVal);
-				BigDecimal itemCount = new BigDecimal(expeItemCountTextField.textProperty().get());
-				expeSumAmountTextField.setText(itemCount.multiply(itemPrice).toString());			
-			}
-		});
-		expeItemPriceTextField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-			DecimalFormat df = new DecimalFormat("0.00");
-			df.setRoundingMode(RoundingMode.HALF_UP);
-			if(!newVal.booleanValue()){
-				BigDecimal itemCount = new BigDecimal(expeItemPriceTextField.getText());
-				expeItemPriceTextField.setText(df.format(itemCount));
-			}
-		});
 		expeItemPriceTextField.setAlignment(Pos.CENTER_RIGHT);
 		
-		/* expeSumAmountTextField - settings */
-		expeSumAmountTextField.setAlignment(Pos.CENTER_RIGHT);
 		expeSumAmountTextField.setEditable(false);
-		expeSumAmountTextField.textProperty().addListener((obs, oldVal, newVal) -> {
-			DecimalFormat df = new DecimalFormat("0.00");
-			df.setRoundingMode(RoundingMode.HALF_UP);
-			BigDecimal sumAmount = new BigDecimal(newVal);
-			expeSumAmountTextField.setText(df.format(sumAmount));
-		});
+		expeSumAmountTextField.setAlignment(Pos.CENTER_RIGHT);
+		
+		Bindings.bindBidirectional(expeItemCountTextField.textProperty(), expeItemCountValue, new DecimalStringConverter(3));
+		Bindings.bindBidirectional(expeItemPriceTextField.textProperty(), expeItemPriceValue, new DecimalStringConverter(2));
+		Bindings.bindBidirectional(expeSumAmountTextField.textProperty(), expeSumAmountValue, new DecimalStringConverter(2));
+		
+		expeItemCountValue.addListener((obs, oldVal, newVal) -> expeSumAmountValue.set(newVal.multiply(expeItemPriceValue.get())));
+		expeItemPriceValue.addListener((obs, oldVal, newVal) -> expeSumAmountValue.set(newVal.multiply(expeItemCountValue.get())));
 	}
 	
 	public void setDataModel(DataModel dataModel){
@@ -154,17 +145,24 @@ public class BudgetOverviewController {
 		expeUserIdComboBox.setItems(this.dataModel.getUsers());
 		expeUserIdComboBox.getSelectionModel().select(0);
 		
-		expenceTable.setItems(this.dataModel.getExpences(expeOperDtComboBox.getValue()));
+		filteredList = new FilteredList<Expence>(this.dataModel.getExpences(), expence -> {
+			if(expence.getOperDt().equals(expeOperDtComboBox.getValue())){
+				return true;
+			}
+			return false;
+		});
+		expenceTable.setItems(filteredList);
 	}
 	
 	private void showExpenceDetails(Expence expence) {
 		if(expence == null){
-			expeItemCountTextField.setText("1.000");
-			expeItemPriceTextField.setText("0.00");
+			//expeItemCountTextField.setText("1.000");
+			//expeItemPriceTextField.setText("0.00");
 		}else{
+			expeItemIdComboBox.getSelectionModel().select(expence.getExpeItem());
+			expeUserIdComboBox.getSelectionModel().select(expence.getExpeUser());
 			expeItemCountTextField.setText(expence.getExpeItemCount().toString());
 			expeItemPriceTextField.setText(expence.getExpeItemPrice().toString());
-			expeItemIdComboBox.getSelectionModel().select(expence.getExpeItem());
 		}
 	}
 	
@@ -172,9 +170,10 @@ public class BudgetOverviewController {
 		Expence expence = new Expence();
 		expence.setOperDt(expeOperDtComboBox.getValue());
 		expence.setExpeItem(expeItemIdComboBox.getValue());
-		expence.setExpeItemCount(new BigDecimal(expeItemCountTextField.getText()));
-		expence.setExpeItemPrice(new BigDecimal(expeItemPriceTextField.getText()));
-		dataModel.getExpences(expeOperDtComboBox.getValue()).add(expence);
+		expence.setExpeUser(expeUserIdComboBox.getValue());
+		expence.setExpeItemCount(expeItemCountValue.get());
+		expence.setExpeItemPrice(expeItemPriceValue.get());
+		dataModel.getExpences().add(expence);
 	}
 	
 	public void onUpdate(){

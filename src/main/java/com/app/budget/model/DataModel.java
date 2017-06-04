@@ -1,39 +1,41 @@
 package com.app.budget.model;
 
+import java.io.File;
 import java.time.LocalDate;
 
-import javafx.collections.FXCollections;
+import com.app.budget.dao.IItemDAO;
+import com.app.budget.dao.txt.TxtItemDAO;
+
 import javafx.collections.ObservableList;
 
 public class DataModel {
 
-	private ObservableList<Expence> expences = FXCollections.observableArrayList();
-	private ObservableList<Item> items = FXCollections.observableArrayList();
-	
-	private ExpenceDAO expenceDAO;
-	private ItemDAO itemDAO;
+	private IItemDAO itemDAO;
 	private UserDAO userDAO;
+	private ExpenceDAO expenceDAO;
 	
 	public DataModel(){
-		expenceDAO = new ExpenceDAO();
-		itemDAO = new ItemDAO();
+		itemDAO = TxtItemDAO.getInstance(new File("f:/items.txt"));
 		userDAO = UserDAO.getInstance();
+		expenceDAO = ExpenceDAO.getInstance(itemDAO, userDAO);
 	}
 	
 	public void close(){
+		System.out.println("Closing data model");
 	}
 	
-	public ObservableList<Expence> getExpences(LocalDate localDate){
-		expences.clear();
-		expences.addAll(expenceDAO.getByDate(localDate));
-		return expences;
+	public ObservableList<Expence> getExpencesByDate(LocalDate localDate){
+		return expenceDAO.getByDate(localDate);
+	}
+	
+	public ObservableList<Expence> getExpences(){
+		System.out.println("getExpences");
+		return expenceDAO.getAll();
 	}
 	
 	public ObservableList<Item> getItems() {
 		System.out.println("getItems");
-		items.clear();
-		items.addAll(itemDAO.getAll());
-		return items;
+		return itemDAO.getAll();
 	}
 
 	public ObservableList<User> getUsers(){

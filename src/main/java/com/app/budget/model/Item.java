@@ -2,7 +2,7 @@ package com.app.budget.model;
 
 public class Item {
 
-	private int itemId;
+	private long itemId;
 	private String itemName;
 
 	public Item(int itemId, String itemName) {
@@ -10,11 +10,11 @@ public class Item {
 		this.itemName = itemName;
 	}
 
-	public int getItemId() {
+	public long getItemId() {
 		return itemId;
 	}
 
-	public void setItemId(int itemId) {
+	public void setItemId(long itemId) {
 		this.itemId = itemId;
 	}
 
@@ -30,7 +30,7 @@ public class Item {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + itemId;
+		result = (int) (prime * result + itemId);
 		return result;
 	}
 

@@ -1,33 +1,54 @@
 package com.app.budget.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.app.budget.dao.IItemDAO;
 
-public class ItemDAO {
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
-	private List<Item> itemList;
+public class ItemDAO implements IItemDAO{
+
+	private static ItemDAO instance;
+	private ObservableList<Item> items = FXCollections.observableArrayList();
 	
-	public ItemDAO(){
-		itemList = new ArrayList<>();
-		
+	private ItemDAO(){
 		Item item1 = new Item(1, "Chleb");
 		Item item2 = new Item(2, "PepsiCola");
 		Item item3 = new Item(3, "Benzyna");
 		Item item4 = new Item(4, "Kosmetyki");
 		Item item5 = new Item(5, "Sukienka");
 		
-		itemList.add(item1);
-		itemList.add(item2);
-		itemList.add(item3);
-		itemList.add(item4);
-		itemList.add(item5);
+		items.add(item1);
+		items.add(item2);
+		items.add(item3);
+		items.add(item4);
+		items.add(item5);
 	}
 
-	public List<Item> getAll(){
-		return itemList;
+	public static ItemDAO getInstance() {
+		System.out.println("ItemDAO: getInstance");
+		if (instance == null){
+			return new ItemDAO();
+		}
+		return instance;
+	}
+
+	@Override
+	public ObservableList<Item> getAll(){
+		return items;
 	}
 	
-	public Item getItemById(int i) {
-		return itemList.get(i);
+	@Override
+	public Item getById(long id) {
+		for(Item item : items){
+			if(item.getItemId() == id){
+				return item;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public void save(Item item) {
+		items.add(item);
 	}
 }
