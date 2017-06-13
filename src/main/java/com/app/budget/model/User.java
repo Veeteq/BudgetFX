@@ -2,16 +2,16 @@ package com.app.budget.model;
 
 public class User {
 
-	private int userId;
+	private long userId;
 	private String userName;
 	private String userType;
 	private String userDescription;
 
-	public int getUserId(){
+	public long getUserId(){
 		return userId;
 	}
 	
-	public void setUserId(int userId){
+	public void setUserId(long userId){
 		this.userId = userId;
 	}
 	

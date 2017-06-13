@@ -43,7 +43,7 @@ public class RootOverviewController {
 		boolean okClicked = appMain.openUserEditDialog(user);
 		System.out.println(user);
 		if(okClicked){
-			dataModel.getUsers().add(user);
+			dataModel.add(user);
 		}
 	}
 

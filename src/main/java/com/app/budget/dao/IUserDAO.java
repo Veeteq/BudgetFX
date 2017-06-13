@@ -1,11 +1,9 @@
 package com.app.budget.dao;
 
-import com.app.budget.model.User;
-
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public interface IUserDAO {
+public abstract class IUserDAO<T> implements IDAO<T>{
 
-	public ObservableList<User> getAll();
-	public User getById(int id);
+	protected ObservableList<T> users = FXCollections.observableArrayList();
 }

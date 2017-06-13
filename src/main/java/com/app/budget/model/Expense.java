@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class Expence {
+public class Expense {
 
 	private ObjectProperty<LocalDate> operDt = new SimpleObjectProperty<LocalDate>();
 	private ObjectProperty<Item> expeItem = new SimpleObjectProperty<Item>();
@@ -15,7 +15,7 @@ public class Expence {
 	private ObjectProperty<BigDecimal> expeItemPrice = new SimpleObjectProperty<BigDecimal>();
 	private ObjectProperty<BigDecimal> expeSumAmonut = new SimpleObjectProperty<BigDecimal>();
 	
-	public Expence(){
+	public Expense(){
 		expeItemCount.addListener((obs, oldVal, newVal) -> {
 			if(this.expeItemPrice.get() != null){
 				this.expeSumAmonut.set(this.expeItemPrice.get().multiply(newVal));

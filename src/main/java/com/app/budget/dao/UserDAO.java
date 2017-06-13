@@ -1,14 +1,12 @@
-package com.app.budget.model;
+package com.app.budget.dao;
 
-import com.app.budget.dao.IUserDAO;
+import com.app.budget.model.User;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class UserDAO implements IUserDAO{
+public class UserDAO extends IUserDAO<User>{
 
 	private static UserDAO instance;
-	private ObservableList<User> users = FXCollections.observableArrayList();
 
 	private UserDAO() {
 		System.out.println("UserDAO: private Constructor");
@@ -23,21 +21,40 @@ public class UserDAO implements IUserDAO{
 	public static UserDAO getInstance() {
 		System.out.println("UserDAO: getInstance");
 		if (instance == null){
-			return new UserDAO();
+			instance = new UserDAO();
 		}
 		return instance;
 	}
 	
+	@Override
 	public ObservableList<User> getAll() {
 		return users;
 	}
 
-	public User getById(int id) {
+	@Override
+	public User getById(long id) {
 		for(User user : users){
 			if(user.getUserId() == id){
 				return user;
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public void add(User user) {
+		users.add(user);
+	}
+
+	@Override
+	public void delete(User t) {
+	}
+
+	@Override
+	public void update(User t) {
+	}
+
+	@Override
+	public void save() {
 	}
 }
