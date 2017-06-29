@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.app.budget.model.DataModel;
-import com.app.budget.model.Expence;
+import com.app.budget.model.Expense;
 import com.app.budget.model.Item;
 import com.app.budget.model.User;
 import com.app.budget.util.DateUtil;
@@ -34,19 +34,19 @@ public class BudgetOverviewController {
 	private DatePicker expeOperDtComboBox;
 	
 	@FXML
-	private TableView<Expence> expenceTable;
+	private TableView<Expense> expenseTable;
 	
 	@FXML
-	private TableColumn<Expence, Item> expeItemColumn;
+	private TableColumn<Expense, Item> expeItemColumn;
 	
 	@FXML
-	private TableColumn<Expence, BigDecimal> expeItemCountColumn;
+	private TableColumn<Expense, BigDecimal> expeItemCountColumn;
 	
 	@FXML
-	private TableColumn<Expence, BigDecimal> expeItemPriceColumn;
+	private TableColumn<Expense, BigDecimal> expeItemPriceColumn;
 	
 	@FXML
-	private TableColumn<Expence, BigDecimal> expeSumAmountColumn;
+	private TableColumn<Expense, BigDecimal> expeSumAmountColumn;
 	
 	@FXML
 	private TextField expeItemCountTextField;
@@ -78,7 +78,7 @@ public class BudgetOverviewController {
 	private ObjectProperty<BigDecimal> expeItemPriceValue = new SimpleObjectProperty<BigDecimal>();
 	private ObjectProperty<BigDecimal> expeSumAmountValue = new SimpleObjectProperty<BigDecimal>();
 	
-	private FilteredList<Expence> filteredList;
+	private FilteredList<Expense> filteredList;
 	
 	public BudgetOverviewController(){
 		System.out.println("controller");
@@ -92,13 +92,13 @@ public class BudgetOverviewController {
 		expeOperDtComboBox.setConverter(DateUtil.getConverter());
 		expeOperDtComboBox.setValue(LocalDate.now());
 		expeOperDtComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
-			filteredList.setPredicate(expence -> {
-				if(expence.getOperDt().equals(newVal)){
+			filteredList.setPredicate(expense -> {
+				if(expense.getOperDt().equals(newVal)){
 					return true;
 				}
 				return false;
 			});
-			expenceTable.refresh();
+			expenseTable.refresh();
 		});
 		
 		expeItemColumn.setCellValueFactory(cellData -> cellData.getValue().getExpeItemProperty());
@@ -113,9 +113,9 @@ public class BudgetOverviewController {
 		expeSumAmountColumn.setCellValueFactory(cellData -> cellData.getValue().getExpeSumAmountProperty());
 		expeSumAmountColumn.setCellFactory(cell -> new TableCellFormatter(2));
 		
-		showExpenceDetails(null);
+		showExpenseDetails(null);
 		
-		expenceTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> showExpenceDetails(newVal));
+		expenseTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> showExpenseDetails(newVal));
 		
 		/* expeItemCountTextField - settings */
 		expeItemCountTextField.setTextFormatter(NumberTextFormatter.getNumberTextFormatter());
@@ -145,35 +145,35 @@ public class BudgetOverviewController {
 		expeUserIdComboBox.setItems(this.dataModel.getUsers());
 		expeUserIdComboBox.getSelectionModel().select(0);
 		
-		filteredList = new FilteredList<Expence>(this.dataModel.getExpences(), expence -> {
-			if(expence.getOperDt().equals(expeOperDtComboBox.getValue())){
+		filteredList = new FilteredList<Expense>(this.dataModel.getExpenses(), expense -> {
+			if(expense.getOperDt().equals(expeOperDtComboBox.getValue())){
 				return true;
 			}
 			return false;
 		});
-		expenceTable.setItems(filteredList);
+		expenseTable.setItems(filteredList);
 	}
 	
-	private void showExpenceDetails(Expence expence) {
-		if(expence == null){
+	private void showExpenseDetails(Expense expense) {
+		if(expense == null){
 			//expeItemCountTextField.setText("1.000");
 			//expeItemPriceTextField.setText("0.00");
 		}else{
-			expeItemIdComboBox.getSelectionModel().select(expence.getExpeItem());
-			expeUserIdComboBox.getSelectionModel().select(expence.getExpeUser());
-			expeItemCountTextField.setText(expence.getExpeItemCount().toString());
-			expeItemPriceTextField.setText(expence.getExpeItemPrice().toString());
+			expeItemIdComboBox.getSelectionModel().select(expense.getExpeItem());
+			expeUserIdComboBox.getSelectionModel().select(expense.getExpeUser());
+			expeItemCountTextField.setText(expense.getExpeItemCount().toString());
+			expeItemPriceTextField.setText(expense.getExpeItemPrice().toString());
 		}
 	}
 	
 	public void onSave(){
-		Expence expence = new Expence();
-		expence.setOperDt(expeOperDtComboBox.getValue());
-		expence.setExpeItem(expeItemIdComboBox.getValue());
-		expence.setExpeUser(expeUserIdComboBox.getValue());
-		expence.setExpeItemCount(expeItemCountValue.get());
-		expence.setExpeItemPrice(expeItemPriceValue.get());
-		dataModel.getExpences().add(expence);
+		Expense expense = new Expense();
+		expense.setOperDt(expeOperDtComboBox.getValue());
+		expense.setExpeItem(expeItemIdComboBox.getValue());
+		expense.setExpeUser(expeUserIdComboBox.getValue());
+		expense.setExpeItemCount(expeItemCountValue.get());
+		expense.setExpeItemPrice(expeItemPriceValue.get());
+		dataModel.getExpenses().add(expense);
 	}
 	
 	public void onUpdate(){

@@ -3,12 +3,12 @@ package com.app.budget.util;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
-import com.app.budget.model.Expence;
+import com.app.budget.model.Expense;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
 
-public class TableCellFormatter extends TableCell<Expence, BigDecimal>{
+public class TableCellFormatter extends TableCell<Expense, BigDecimal>{
 
 	private DecimalFormat df;
 	

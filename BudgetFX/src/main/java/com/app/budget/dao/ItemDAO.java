@@ -1,11 +1,14 @@
-package com.app.budget.model;
+package com.app.budget.dao;
+
+import java.util.Optional;
 
 import com.app.budget.dao.IItemDAO;
+import com.app.budget.model.Item;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class ItemDAO implements IItemDAO{
+public class ItemDAO extends IItemDAO<Item>{
 
 	private static ItemDAO instance;
 	private ObservableList<Item> items = FXCollections.observableArrayList();
@@ -38,17 +41,30 @@ public class ItemDAO implements IItemDAO{
 	}
 	
 	@Override
-	public Item getById(long id) {
+	public Optional<Item> getById(long id) {
 		for(Item item : items){
 			if(item.getItemId() == id){
-				return item;
+				return Optional.of(item);
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
-	public void save(Item item) {
+	public void add(Item item) {
 		items.add(item);
+	}
+
+
+	@Override
+	public void delete(Item item) {
+	}
+
+	@Override
+	public void update(Item item) {
+	}
+
+	@Override
+	public void save() {
 	}
 }

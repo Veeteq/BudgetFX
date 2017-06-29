@@ -6,16 +6,16 @@ import java.time.LocalDate;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class Expence {
+public class Expense {
 
 	private ObjectProperty<LocalDate> operDt = new SimpleObjectProperty<LocalDate>();
-	private ObjectProperty<User> expeUser = new SimpleObjectProperty<User>();
 	private ObjectProperty<Item> expeItem = new SimpleObjectProperty<Item>();
+	private ObjectProperty<User> expeUser = new SimpleObjectProperty<User>();
 	private ObjectProperty<BigDecimal> expeItemCount = new SimpleObjectProperty<BigDecimal>();
 	private ObjectProperty<BigDecimal> expeItemPrice = new SimpleObjectProperty<BigDecimal>();
 	private ObjectProperty<BigDecimal> expeSumAmonut = new SimpleObjectProperty<BigDecimal>();
 	
-	public Expence(){
+	public Expense(){
 		expeItemCount.addListener((obs, oldVal, newVal) -> {
 			if(this.expeItemPrice.get() != null){
 				this.expeSumAmonut.set(this.expeItemPrice.get().multiply(newVal));
@@ -40,18 +40,6 @@ public class Expence {
 		this.operDt.set(operDt);
 	}
 
-	public ObjectProperty<User> getExpeUserProperty(){
-		return expeUser;
-	}
-
-	public User getExpeUser() {
-		return expeUser.get();
-	}
-
-	public void setExpeUser(User expeUser) {
-		this.expeUser.set(expeUser);
-	}
-	
 	public ObjectProperty<Item> getExpeItemProperty(){
 		return expeItem;
 	}
@@ -64,6 +52,18 @@ public class Expence {
 		this.expeItem.set(expeItem);
 	}
 
+	public ObjectProperty<User> getExpeUserProperty(){
+		return expeUser;
+	}
+
+	public User getExpeUser() {
+		return expeUser.get();
+	}
+
+	public void setExpeUser(User expeUser) {
+		this.expeUser.set(expeUser);
+	}
+	
 	public ObjectProperty<BigDecimal> getExpeItemCountProperty(){
 		return expeItemCount;
 	}

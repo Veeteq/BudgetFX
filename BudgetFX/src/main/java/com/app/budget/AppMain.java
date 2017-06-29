@@ -1,11 +1,15 @@
 package com.app.budget;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.bind.JAXBException;
+
 import com.app.budget.model.DataModel;
 import com.app.budget.model.User;
+import com.app.budget.util.AlertDisplay;
 import com.app.budget.view.BudgetOverviewController;
 import com.app.budget.view.RootOverviewController;
 import com.app.budget.view.UserEditDialogController;
@@ -13,6 +17,7 @@ import com.app.budget.view.UserEditDialogController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -54,7 +59,7 @@ public class AppMain extends Application {
 			window.show();
 			
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.log(Level.WARNING, e.getMessage());
 		}
 	}
 
@@ -72,16 +77,23 @@ public class AppMain extends Application {
 			controller.setDataModel(rootController.getDataModel());
 			
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.log(Level.WARNING, e.getMessage());
 		}
 	}
 
 	private RootOverviewController buildController(Stage window){
 		LOGGER.info("AppMain: buildController");
-		return new RootOverviewController(this, buildDataModel(), window);
+		try{
+			return new RootOverviewController(this, buildDataModel(), window);			
+		}catch(IOException | JAXBException | SQLException e){
+			LOGGER.log(Level.WARNING, e.getMessage());
+			AlertDisplay.displayAlert(AlertType.ERROR, e.getMessage());
+			System.exit(1);
+		}
+		return null;
 	}
 
-	private DataModel buildDataModel(){
+	private DataModel buildDataModel() throws IOException, JAXBException, SQLException{
 		LOGGER.info("AppMain: buildDataModel");
 		return new DataModel();
 	}

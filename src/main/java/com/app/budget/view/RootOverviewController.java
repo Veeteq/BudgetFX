@@ -7,15 +7,18 @@ import com.app.budget.model.User;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class RootOverviewController {
 
 	private AppMain appMain;
 	private DataModel dataModel;
+	private Stage window;
 	
 	public RootOverviewController(AppMain appMain, DataModel dataModel, Stage window) {
 		this.appMain = appMain;
 		this.dataModel = dataModel;
+		this.window = window;
 		window.setOnCloseRequest(e -> dataModel.close());
 	}
 	
@@ -25,6 +28,7 @@ public class RootOverviewController {
 	
 	@FXML
 	private void onClose(){
+		window.getOnCloseRequest().handle(new WindowEvent(window, WindowEvent.WINDOW_CLOSE_REQUEST));
 		Platform.exit();
 		System.exit(0);
 	}
@@ -39,7 +43,7 @@ public class RootOverviewController {
 		boolean okClicked = appMain.openUserEditDialog(user);
 		System.out.println(user);
 		if(okClicked){
-			dataModel.getUsers().add(user);
+			dataModel.add(user);
 		}
 	}
 

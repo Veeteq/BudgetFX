@@ -5,7 +5,10 @@ public class Item {
 	private long itemId;
 	private String itemName;
 
-	public Item(int itemId, String itemName) {
+	public Item(){
+	}
+	
+	public Item(long itemId, String itemName) {
 		this.itemId = itemId;
 		this.itemName = itemName;
 	}
