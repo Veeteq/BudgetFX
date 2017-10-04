@@ -2,13 +2,16 @@ package com.app.budget.dao.xml;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import com.app.budget.dao.IDAO;
 import com.app.budget.dao.IUserDAO;
+import com.app.budget.dao.txt.TxtUserDAO;
 import com.app.budget.model.User;
 
 import javafx.collections.ObservableList;
@@ -17,7 +20,6 @@ public class XmlUserDAO extends IUserDAO<User>{
 
 	private static XmlUserDAO instance;
 	private File dataFile;
-	private long lastUserId;
 
 	private XmlUserDAO(File dataFile) throws IOException, JAXBException {
 		this.dataFile = dataFile;
@@ -46,13 +48,13 @@ public class XmlUserDAO extends IUserDAO<User>{
 	}
 
 	@Override
-	public User getById(long id) {
+	public Optional<User> getById(long id) {
 		for(User user : users){
 			if(user.getUserId() == id){
-				return user;
+				return Optional.of(user);
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
@@ -81,13 +83,19 @@ public class XmlUserDAO extends IUserDAO<User>{
 		marshaller.marshal(wrapper, dataFile);
 	}
 	
-	private long getLastUserId(){
-		long userId = 0;
-		long lastUserId = 0;
-		for(User user : users){
-			userId = user.getUserId();
-			lastUserId = userId > lastUserId ? userId : lastUserId;
+	public static void main(String[] args) throws Exception {
+		File userFile = new File("f:/users.txt");
+		File userFileXml = new File("f:/users.xml");
+		IDAO<User> t1 = TxtUserDAO.getInstance(userFile);
+		System.out.println(t1.getAll().size());
+		IDAO<User> t2 = XmlUserDAO.getInstance(userFileXml);
+		System.out.println(t2.getAll().size());
+		
+		for(User i : t1.getAll()){
+			if(!t2.getAll().contains(i)){
+				t2.add(i);
+			}
 		}
-		return lastUserId;
+		t2.save();
 	}
 }
