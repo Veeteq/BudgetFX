@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Optional;
 
+import com.app.budget.dao.IDAO;
 import com.app.budget.dao.IUserDAO;
 import com.app.budget.model.User;
 
@@ -16,7 +18,6 @@ public class TxtUserDAO extends IUserDAO<User>{
 
 	private static TxtUserDAO instance;
 	private File dataFile;
-	private long lastUserId;
 	
 	private TxtUserDAO(File dataFile) throws IOException{
 		this.dataFile = dataFile;
@@ -34,7 +35,6 @@ public class TxtUserDAO extends IUserDAO<User>{
 				User user = new User();
 				
 				long userId = Integer.parseInt(lineData[0]);
-				lastUserId = userId > lastUserId ? userId : lastUserId;
 				
 				user.setUserId(userId);
 				user.setUserName(lineData[1]);
@@ -42,10 +42,13 @@ public class TxtUserDAO extends IUserDAO<User>{
 				users.add(user);
 				lineTxt = br.readLine();
 			}
+			
 			br.close();
 			userFileReader.close();
+
+			lastUserId = getLastUserId();
+			
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new IOException(e);
 		} 
 	}
@@ -64,13 +67,13 @@ public class TxtUserDAO extends IUserDAO<User>{
 	}
 
 	@Override
-	public User getById(long id) {
+	public Optional<User> getById(long id) {
 		for(User user : users){
 			if(user.getUserId() == id){
-				return user;
+				return Optional.of(user);
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
@@ -103,5 +106,13 @@ public class TxtUserDAO extends IUserDAO<User>{
 		bw.flush();
 		bw.close();
 		userFileWriter.close();
-	}	
+	}
+	
+	public static void main(String[] args) throws IOException {
+		File userFile = new File("f:/users.txt");
+		IDAO<User> u = TxtUserDAO.getInstance(userFile);
+		for(User i : u.getAll()){
+			System.out.println(i.getUserName());
+		}
+	}
 }

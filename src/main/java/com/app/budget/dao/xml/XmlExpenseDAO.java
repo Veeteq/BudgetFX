@@ -85,4 +85,5 @@ public class XmlExpenseDAO extends IExpenseDAO<Expense>{
 	public ObservableList<Expense> getByDate(LocalDate localDate) {
 		return null;
 	}
+
 }

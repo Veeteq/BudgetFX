@@ -6,10 +6,10 @@ import java.time.LocalDate;
 
 import javax.xml.bind.JAXBException;
 
-import com.app.budget.dao.ExpenseDAO;
 import com.app.budget.dao.IExpenseDAO;
 import com.app.budget.dao.IItemDAO;
 import com.app.budget.dao.IUserDAO;
+import com.app.budget.dao.txt.TxtExpenseDAO;
 import com.app.budget.dao.txt.TxtItemDAO;
 import com.app.budget.dao.txt.TxtUserDAO;
 
@@ -22,15 +22,16 @@ public class DataModel {
 	private IExpenseDAO<Expense> expenseDAO;
 	
 	public DataModel() throws IOException, JAXBException{
-		//itemDAO = XmlItemDAO.getInstance(new File("f:/items.xml"));
-		//userDAO = TxtUserDAO.getInstance(new File("f:/users.txt"));
-		itemDAO = TxtItemDAO.getInstance(new File("/run/media/actimize/BC3C84CD3C8483DC/items.txt"));
-		userDAO = TxtUserDAO.getInstance(new File("/run/media/actimize/BC3C84CD3C8483DC/users.txt"));
-		expenseDAO = ExpenseDAO.getInstance(itemDAO, userDAO);
+		itemDAO = TxtItemDAO.getInstance(new File("f:/items.txt"));
+		userDAO = TxtUserDAO.getInstance(new File("f:/users.txt"));
+		expenseDAO = TxtExpenseDAO.getInstance(new File("f:/expences.txt"), itemDAO, userDAO);
 	}
 	
-	public void close(){
+	public void close() throws Exception{
 		System.out.println("Closing data model");
+		itemDAO.save();
+		userDAO.save();
+		expenseDAO.save();
 	}
 	
 	public ObservableList<Expense> getExpensesByDate(LocalDate localDate){
@@ -54,9 +55,5 @@ public class DataModel {
 
 	public void add(User user) {
 		userDAO.add(user);
-	}
-
-	public void add(Expense expense) {
-		expenseDAO.add(expense);
 	}
 }

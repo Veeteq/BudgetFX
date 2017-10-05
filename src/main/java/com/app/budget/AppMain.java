@@ -1,6 +1,7 @@
 package com.app.budget;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -84,14 +85,15 @@ public class AppMain extends Application {
 		LOGGER.info("AppMain: buildController");
 		try{
 			return new RootOverviewController(this, buildDataModel(), window);			
-		}catch(IOException | JAXBException e){
+		}catch(IOException | JAXBException | SQLException e){
+			LOGGER.log(Level.WARNING, e.getMessage());
 			AlertDisplay.displayAlert(AlertType.ERROR, e.getMessage());
 			System.exit(1);
 		}
 		return null;
 	}
 
-	private DataModel buildDataModel() throws IOException, JAXBException{
+	private DataModel buildDataModel() throws IOException, JAXBException, SQLException{
 		LOGGER.info("AppMain: buildDataModel");
 		return new DataModel();
 	}

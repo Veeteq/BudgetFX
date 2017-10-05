@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Optional;
 
 import com.app.budget.dao.IItemDAO;
 import com.app.budget.model.Item;
@@ -28,8 +29,10 @@ public class TxtItemDAO extends IItemDAO<Item> {
 			}
 			br.close();
 			itemFileReader.close();
+			
+			this.lastItemId = getLastItemId();
+			
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new IOException(e);
 		} 
 	}
@@ -48,17 +51,18 @@ public class TxtItemDAO extends IItemDAO<Item> {
 	}
 
 	@Override
-	public Item getById(long id) {
+	public Optional<Item> getById(long id) {
 		for(Item item : items){
 			if(item.getItemId() == id){
-				return item;
+				return Optional.of(item);
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
 	public void add(Item item) {
+		item.setItemId(++lastItemId);
 		items.add(item);
 	}
 
@@ -73,5 +77,13 @@ public class TxtItemDAO extends IItemDAO<Item> {
 	@Override
 	public void save() {
 		System.out.println("Save items");
+	}
+	
+	public static void main(String[] args) throws IOException {
+		File itemFile = new File("f:/items.txt");
+		TxtItemDAO t = TxtItemDAO.getInstance(itemFile);
+		for(Item i : t.getAll()){
+			System.out.println(i.getItemName());
+		}
 	}
 }

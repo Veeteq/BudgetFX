@@ -3,17 +3,23 @@ package com.app.budget.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 public class Expense {
 
+	private LongProperty expeId = new SimpleLongProperty();
 	private ObjectProperty<LocalDate> operDt = new SimpleObjectProperty<LocalDate>();
 	private ObjectProperty<Item> expeItem = new SimpleObjectProperty<Item>();
 	private ObjectProperty<User> expeUser = new SimpleObjectProperty<User>();
 	private ObjectProperty<BigDecimal> expeItemCount = new SimpleObjectProperty<BigDecimal>();
 	private ObjectProperty<BigDecimal> expeItemPrice = new SimpleObjectProperty<BigDecimal>();
 	private ObjectProperty<BigDecimal> expeSumAmonut = new SimpleObjectProperty<BigDecimal>();
+	private StringProperty expeCommTxt = new SimpleStringProperty();
 	
 	public Expense(){
 		expeItemCount.addListener((obs, oldVal, newVal) -> {
@@ -28,6 +34,18 @@ public class Expense {
 		});
 	}
 
+	public LongProperty getExpeIdProperty(){
+		return this.expeId;
+	}
+	
+	public Long getExpeId(){
+		return this.expeId.get();
+	}
+	
+	public void setExpeId(Long expeId){
+		this.expeId.set(expeId);
+	}
+	
 	public ObjectProperty<LocalDate> getOperDtProperty(){
 		return this.operDt;
 	}
@@ -99,4 +117,16 @@ public class Expense {
 	public void setExpeSumAmount(BigDecimal expeSumAmount) {
 		this.expeSumAmonut.set(expeSumAmount);
 	}	
+
+	public StringProperty getExpeCommTxtProperty(){
+		return expeCommTxt;
+	}
+	
+	public String getExpeCommTxt(){
+		return this.expeCommTxt.get();
+	}
+	
+	public void setExpeCommTxt(String expeCommTxt){
+		this.expeCommTxt.set(expeCommTxt);
+	}
 }
