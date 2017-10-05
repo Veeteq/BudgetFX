@@ -8,7 +8,7 @@ public class Item {
 	public Item(){
 	}
 	
-	public Item(int itemId, String itemName) {
+	public Item(long itemId, String itemName) {
 		this.itemId = itemId;
 		this.itemName = itemName;
 	}

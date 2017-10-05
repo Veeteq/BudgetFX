@@ -1,5 +1,7 @@
 package com.app.budget.dao;
 
+import java.util.Optional;
+
 import com.app.budget.dao.IItemDAO;
 import com.app.budget.model.Item;
 
@@ -39,13 +41,13 @@ public class ItemDAO extends IItemDAO<Item>{
 	}
 	
 	@Override
-	public Item getById(long id) {
+	public Optional<Item> getById(long id) {
 		for(Item item : items){
 			if(item.getItemId() == id){
-				return item;
+				return Optional.of(item);
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override

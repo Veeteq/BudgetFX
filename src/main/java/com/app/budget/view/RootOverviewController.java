@@ -19,7 +19,14 @@ public class RootOverviewController {
 		this.appMain = appMain;
 		this.dataModel = dataModel;
 		this.window = window;
-		window.setOnCloseRequest(e -> dataModel.close());
+
+		window.setOnCloseRequest(e -> {
+			try{
+				dataModel.close();
+			}catch(Exception exc){
+				exc.printStackTrace();
+			}
+		});
 	}
 	
 	@FXML

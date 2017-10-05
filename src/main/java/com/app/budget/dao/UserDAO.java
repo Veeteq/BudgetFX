@@ -1,5 +1,7 @@
 package com.app.budget.dao;
 
+import java.util.Optional;
+
 import com.app.budget.model.User;
 
 import javafx.collections.ObservableList;
@@ -32,13 +34,13 @@ public class UserDAO extends IUserDAO<User>{
 	}
 
 	@Override
-	public User getById(long id) {
+	public Optional<User> getById(long id) {
 		for(User user : users){
 			if(user.getUserId() == id){
-				return user;
+				return Optional.of(user);
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override

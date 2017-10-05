@@ -2,13 +2,16 @@ package com.app.budget.dao.xml;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import com.app.budget.dao.IDAO;
 import com.app.budget.dao.IItemDAO;
+import com.app.budget.dao.txt.TxtItemDAO;
 import com.app.budget.model.Item;
 
 import javafx.collections.ObservableList;
@@ -17,7 +20,6 @@ public class XmlItemDAO extends IItemDAO<Item>{
 
 	private static XmlItemDAO instance;
 	private File dataFile;
-	private long lastItemId;
 	
 	private XmlItemDAO(File dataFile) throws IOException, JAXBException {
 		System.out.println("file: " + dataFile.getAbsolutePath());
@@ -47,13 +49,13 @@ public class XmlItemDAO extends IItemDAO<Item>{
 	}
 
 	@Override
-	public Item getById(long id) {
+	public Optional<Item> getById(long id) {
 		for(Item item : items){
 			if(item.getItemId() == id){
-				return item;
+				return Optional.of(item);
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
@@ -84,15 +86,21 @@ public class XmlItemDAO extends IItemDAO<Item>{
 		
 		marshaller.marshal(wrapper, dataFile);
 	}
-
-	private long getLastItemId(){
-		long itemId = 0;
-		long lastItemId = 0;
-		for(Item item : items){
-			itemId = item.getItemId();
-			lastItemId = itemId > lastItemId ? itemId : lastItemId;
+	
+	public static void main(String[] args) throws Exception {
+		File itemFile = new File("f:/items.txt");
+		File itemFileXml = new File("f:/items.xml");
+		IDAO<Item> t1 = TxtItemDAO.getInstance(itemFile);
+		System.out.println(t1.getAll().size());
+		IDAO<Item> t2 = XmlItemDAO.getInstance(itemFileXml);
+		System.out.println(t2.getAll().size());
+		
+		for(Item i : t1.getAll()){
+			if(!t2.getAll().contains(i)){
+				t2.add(i);
+			}
 		}
-		return lastItemId;
+		t2.save();
 	}
 }
 

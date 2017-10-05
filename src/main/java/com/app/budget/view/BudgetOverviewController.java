@@ -173,7 +173,7 @@ public class BudgetOverviewController {
 		expense.setExpeUser(expeUserIdComboBox.getValue());
 		expense.setExpeItemCount(expeItemCountValue.get());
 		expense.setExpeItemPrice(expeItemPriceValue.get());
-		dataModel.add(expense);
+		dataModel.getExpenses().add(expense);
 	}
 	
 	public void onUpdate(){
