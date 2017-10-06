@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -53,7 +54,7 @@ public class TxtExpenseDAO extends IExpenseDAO<Expense>{
 			br.close();
 			
 			lastExpeId = getLastExpeId();
-			
+			System.out.println(lastExpeId);
 		} catch (IOException e) {
 			throw new IOException(e);
 		} 
@@ -80,19 +81,26 @@ public class TxtExpenseDAO extends IExpenseDAO<Expense>{
 
 	@Override
 	public void add(Expense expense) {
-		expense.setExpeId(lastExpeId);
+		expense.setExpeId(++lastExpeId);
 		expenses.add(expense);
-	}
-
-	@Override
-	public void delete(Expense expense) {
-		
 	}
 
 	@Override
 	public void update(Expense t) {
 		
 	}
+
+	@Override
+	public void delete(Expense expense) {
+		Iterator<Expense> iterator = expenses.iterator();
+		while(iterator.hasNext()){
+			if(iterator.next().getExpeId().equals(expense.getExpeId())){
+				System.out.println(expense.getExpeId() + " will be removed.");
+				iterator.remove();
+			}
+		}
+	}
+
 
 	@Override
 	public void save() throws Exception {

@@ -127,6 +127,7 @@ public class Expense {
 	}
 	
 	public void setExpeCommTxt(String expeCommTxt){
-		this.expeCommTxt.set(expeCommTxt);
+		
+		this.expeCommTxt.set(expeCommTxt == null ? "" : expeCommTxt);
 	}
 }

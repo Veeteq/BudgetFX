@@ -56,4 +56,16 @@ public class DataModel {
 	public void add(User user) {
 		userDAO.add(user);
 	}
+
+	public void add(Expense expense) {
+		expenseDAO.add(expense);
+	}
+	
+	public void update(Expense expense) {
+		expenseDAO.update(expense);
+	}
+
+	public void delete(Expense expense) {
+		expenseDAO.delete(expense);
+	}
 }

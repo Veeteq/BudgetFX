@@ -35,6 +35,9 @@
             <Label layoutX="190.0" layoutY="110.0" text="Razem" />
             <TextField fx:id="expeSumAmountTextField" layoutX="202.0" layoutY="126.0" prefHeight="26.0" prefWidth="86.0" />
             
+            <Label layoutX="10.0" layoutY="160.0" text="Uwagi" />
+            <TextField fx:id="expeItemCommTextField" layoutX="10.0" layoutY="176.0" prefHeight="26.0" prefWidth="280.0" />
+            
             <HBox alignment="TOP_CENTER" layoutX="10" layoutY="222">
               <children>
                 <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#onSave" text="Zapisz" />
@@ -51,6 +54,7 @@
                 <TableColumn fx:id="expeItemCountColumn" prefWidth="75.0" text="Ilosc" />
                 <TableColumn fx:id="expeItemPriceColumn" prefWidth="75.0" text="Cena" />
                 <TableColumn fx:id="expeSumAmountColumn" prefWidth="75.0" text="Suma" />
+                <TableColumn fx:id="expeUserColumn" prefWidth="75.0" text="User" />
               </columns>
                   <columnResizePolicy>
                      <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
