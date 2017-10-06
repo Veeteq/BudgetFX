@@ -1,9 +1,13 @@
 package com.app.budget.dao.txt;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.Optional;
 
 import com.app.budget.dao.IItemDAO;
@@ -14,21 +18,22 @@ import javafx.collections.ObservableList;
 public class TxtItemDAO extends IItemDAO<Item> {
 
 	private static TxtItemDAO instance;
+	private File dataFile;
 	
 	private TxtItemDAO(File itemFile) throws IOException{
+		this.dataFile = itemFile;
 		try {
-			FileReader itemFileReader = new FileReader(itemFile);
-			BufferedReader br = new BufferedReader(itemFileReader);
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(dataFile),"UTF-8"));
 			String lineTxt = br.readLine();
 			String[] lineData;
 			while(lineTxt != null){
 				lineData = lineTxt.split("\\t");
 				Item item = new Item(Integer.parseInt(lineData[0]), lineData[2]);
+				item.setCategoryId(Integer.parseInt(lineData[1]));
 				add(item);
 				lineTxt = br.readLine();
 			}
 			br.close();
-			itemFileReader.close();
 			
 			this.lastItemId = getLastItemId();
 			
@@ -75,15 +80,25 @@ public class TxtItemDAO extends IItemDAO<Item> {
 	}
 
 	@Override
-	public void save() {
+	public void save() throws IOException {
 		System.out.println("Save items");
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(dataFile),"UTF-8"));
+		for(Item item : items){
+            bw.write(String.format("%d\t%d\t%s",
+                        		  item.getItemId(),
+                        		  item.getCategoryId(),
+                        		  item.getItemName()));			
+			bw.newLine();
+		}
+		bw.flush();
+		bw.close();
 	}
 	
 	public static void main(String[] args) throws IOException {
 		File itemFile = new File("f:/items.txt");
 		TxtItemDAO t = TxtItemDAO.getInstance(itemFile);
 		for(Item i : t.getAll()){
-			System.out.println(i.getItemName());
+			System.out.println(i.getItemId() + "\t" + i.getCategoryId() + "\t" + i.getItemName());
 		}
 	}
 }

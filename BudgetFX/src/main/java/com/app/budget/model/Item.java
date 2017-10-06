@@ -3,6 +3,7 @@ package com.app.budget.model;
 public class Item {
 
 	private long itemId;
+	private long categoryId;
 	private String itemName;
 
 	public Item(){
@@ -19,6 +20,14 @@ public class Item {
 
 	public void setItemId(long itemId) {
 		this.itemId = itemId;
+	}
+
+	public long getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(long categoryId) {
+		this.categoryId = categoryId;
 	}
 
 	public String getItemName() {

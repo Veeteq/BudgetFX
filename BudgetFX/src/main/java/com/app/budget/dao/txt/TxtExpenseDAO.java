@@ -3,12 +3,16 @@ package com.app.budget.dao.txt;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Optional;
 
 import com.app.budget.dao.IDAO;
@@ -30,8 +34,7 @@ public class TxtExpenseDAO extends IExpenseDAO<Expense>{
 		this.dataFile = dataFile;
 		StringConverter<LocalDate> st = DateUtil.getConverter();
 		try {
-			FileReader expeFileReader = new FileReader(dataFile);
-			BufferedReader br = new BufferedReader(expeFileReader);
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(dataFile),"UTF-8"));
 			String lineTxt = br.readLine();
 			String[] lineData;
 			while(lineTxt != null){
@@ -44,11 +47,10 @@ public class TxtExpenseDAO extends IExpenseDAO<Expense>{
 				expence.setExpeItemPrice(BigDecimal.valueOf(Double.parseDouble(lineData[4])));
 				expence.setExpeCommTxt(lineData[5]);
 				expence.setExpeUser(userDAO.getById(Integer.parseInt(lineData[6])).get());
-				add(expence);
+				expenses.add(expence);
 				lineTxt = br.readLine();
 			}
 			br.close();
-			expeFileReader.close();
 			
 			lastExpeId = getLastExpeId();
 			
@@ -97,14 +99,15 @@ public class TxtExpenseDAO extends IExpenseDAO<Expense>{
 		System.out.println("Save expenses");
 		StringConverter<LocalDate> st = DateUtil.getConverter();
 		
+		
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(dataFile),"UTF-8"));
 		for(Expense expense : expenses){
-			bw.write(String.format("%d\t%s\t%d\t%.3f\t%.2f\t%s\t%d",
+			bw.write(String.format("%d\t%s\t%d\t%s\t%s\t%s\t%d",
 					              expense.getExpeId(),
 					              st.toString(expense.getOperDt()),
 					              expense.getExpeItem().getItemId(),
-					              expense.getExpeItemCount(),
-					              expense.getExpeItemPrice(),
+					              formatDecimal(expense.getExpeItemCount(),3),
+					              formatDecimal(expense.getExpeItemPrice(),2),
 					              expense.getExpeCommTxt(),
 					              expense.getExpeUser().getUserId()));
 			bw.newLine();
@@ -118,6 +121,24 @@ public class TxtExpenseDAO extends IExpenseDAO<Expense>{
 		return null;
 	}
 	
+	private static String formatDecimal(BigDecimal bigDecimal, int precision){
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
+		symbols.setDecimalSeparator('.');
+		
+		DecimalFormat decimalFormat = new DecimalFormat();
+		decimalFormat.setDecimalFormatSymbols(symbols);
+		
+		switch(precision){
+		case 2:
+			decimalFormat.applyPattern("#.##");
+			break;
+		case 3:
+			decimalFormat.applyPattern("#.###");
+			break;
+		}
+		return decimalFormat.format(bigDecimal.doubleValue());
+	}
+	
 	public static void main(String[] args) throws IOException {
 		StringConverter<LocalDate> st = DateUtil.getConverter();
 		File itemFile = new File("f:/items.txt");
@@ -127,12 +148,12 @@ public class TxtExpenseDAO extends IExpenseDAO<Expense>{
 		File expenseFile = new File("f:/expences.txt");
 		IDAO<Expense> x = TxtExpenseDAO.getInstance(expenseFile, i, u);
 		for(Expense e : x.getAll()){
-			System.out.println(String.format("%d\t%s\t%d\t%.3f\t%.2f\t%s\t%d",
+			System.out.println(String.format("%d\t%s\t%d\t%s\t%s\t%s\t%d",
 		              e.getExpeId(),
 		              st.toString(e.getOperDt()),
 		              e.getExpeItem().getItemId(),
-		              e.getExpeItemCount(),
-		              e.getExpeItemPrice(),
+		              formatDecimal(e.getExpeItemCount(),3),
+		              formatDecimal(e.getExpeItemPrice(),2),
 		              e.getExpeCommTxt(),
 		              e.getExpeUser().getUserId()));
 		}

@@ -3,9 +3,11 @@ package com.app.budget.dao.txt;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.Optional;
 
 import com.app.budget.dao.IDAO;
@@ -25,9 +27,7 @@ public class TxtUserDAO extends IUserDAO<User>{
 			if(!(dataFile.exists() && !dataFile.isDirectory())){
 				dataFile.createNewFile();
 			}
-			
-			FileReader userFileReader = new FileReader(this.dataFile);
-			BufferedReader br = new BufferedReader(userFileReader);
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(dataFile),"UTF-8"));
 			String lineTxt = br.readLine();
 			String[] lineData;
 			while(lineTxt != null){
@@ -44,7 +44,6 @@ public class TxtUserDAO extends IUserDAO<User>{
 			}
 			
 			br.close();
-			userFileReader.close();
 
 			lastUserId = getLastUserId();
 			
@@ -93,8 +92,7 @@ public class TxtUserDAO extends IUserDAO<User>{
 	@Override
 	public void save() throws IOException {
 		System.out.println("Save users");
-		FileWriter userFileWriter = new FileWriter(dataFile);
-		BufferedWriter bw = new BufferedWriter(userFileWriter);
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(dataFile),"UTF-8"));
 		for(User user : users){
 			bw.write(String.format("%d\t%s\t%s\t%s",
 					               user.getUserId(),
@@ -105,14 +103,13 @@ public class TxtUserDAO extends IUserDAO<User>{
 		}
 		bw.flush();
 		bw.close();
-		userFileWriter.close();
 	}
 	
 	public static void main(String[] args) throws IOException {
 		File userFile = new File("f:/users.txt");
 		IDAO<User> u = TxtUserDAO.getInstance(userFile);
 		for(User i : u.getAll()){
-			System.out.println(i.getUserName());
+			System.out.println(i.getUserId() + "\t" + i.getUserName());
 		}
 	}
 }
