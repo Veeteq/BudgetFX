@@ -7,6 +7,7 @@ import com.app.budget.model.DataModel;
 import com.app.budget.model.Expense;
 import com.app.budget.model.Item;
 import com.app.budget.model.User;
+import com.app.budget.util.AutoCompleteComboBox;
 import com.app.budget.util.DateUtil;
 import com.app.budget.util.DecimalStringConverter;
 import com.app.budget.util.NumberTextFormatter;
@@ -147,10 +148,12 @@ public class BudgetOverviewController {
 		this.dataModel = dataModel;
 		
 		expeItemIdComboBox.setItems(this.dataModel.getItems());
-		expeItemIdComboBox.getSelectionModel().select(0);
+		expeItemIdComboBox.getSelectionModel().select(0);		
 		
 		expeUserIdComboBox.setItems(this.dataModel.getUsers());
 		expeUserIdComboBox.getSelectionModel().select(0);
+		expeUserIdComboBox.setOnKeyPressed(e -> expeUserIdComboBox.hide());
+		expeUserIdComboBox.setOnKeyReleased(new AutoCompleteComboBox<User>(expeUserIdComboBox));
 		
 		filteredList = new FilteredList<Expense>(this.dataModel.getExpenses(), expense -> {
 			if(expense.getOperDt().equals(expeOperDtComboBox.getValue())){
